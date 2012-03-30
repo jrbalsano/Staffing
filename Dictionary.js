@@ -17,7 +17,7 @@ UTIL.Dictionary.prototype.contains = function(name) {
 UTIL.Dictionary.prototype.remove = function(key) {
   if(this.contains(key)) delete this.values[key];
   count--;
-}
+};
 
 UTIL.Dictionary.prototype.lookup = function(name) {
   return this.values[name];
