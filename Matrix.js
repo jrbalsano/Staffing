@@ -1,16 +1,38 @@
+var Staffing = Staffing || {};
+
 /**
  * Creates a new instance of Matrix
  * 
  * @param {Number} xcount The width of the array
  * @param {Number} ycount The height of the array
+ * @param {Array} [initialValues] An Array of length xcount containing Arrays of
+ * length ycount which contains values upon which the array should be
+ * initialized. If this parameter is provided, emptyVal must also be provided.
+ * @param [emptyVal] A value to compare each value to using ==. If the
+ * comparison returns true, this value will not be stored in the matrix.
  * @classDescription The Matrix class represents a zero-indexed 2d matrix.
  */
-function Matrix(xcount, ycount) {
+Staffing.Matrix = function Matrix(xcount, ycount, initialValues, emptyVal) {
+  var args = arguments;
   this.xs = UTIL.fillArray(null, xcount, function(index) {
-    return new UTIL.Dictionary();
+    var ret = new UTIL.Dictionary();
+    if(args.length > 2) {
+      for(var y = 0; y < ycount; y++) {
+        if(initialValues[index][y] != emptyVal)
+          ret.store(y, initialValues[index][y]);
+      }
+    }
+    return ret;
   });
   this.ys = UTIL.fillArray(null, ycount, function(index) {
-    return new UTIL.Dictionary();
+    var ret = new UTIL.Dictionary();
+    if(args.length > 2) {
+      for(var x = 0; x < xcount; x++) {
+        if(initialValues[x][index] != emptyVal)
+          ret.store(x, initialValues[x][index]);
+      }
+    }
+    return ret;
   });
 };
 
@@ -18,7 +40,7 @@ function Matrix(xcount, ycount) {
  * @property {Error} An exception meaning the element accessed was out of the
  * matrix bounds
  */
-Matrix.prototype.OutOfBoundsException = new Error("Out of matrix bounds!");
+Staffing.Matrix.prototype.OutOfBoundsException = new Error("Out of matrix bounds!");
 
 /**
  * Sets a value in the matrix
@@ -30,7 +52,7 @@ Matrix.prototype.OutOfBoundsException = new Error("Out of matrix bounds!");
  * @exception {Matrix.prototype.OutofBoundsException} An exception meaning the 
  * element accessed was outside of the bounds of the matrix.
  */
-Matrix.prototype.setValue = function(x, y, value) {
+Staffing.Matrix.prototype.setValue = function(x, y, value) {
   if(x < xs.length && y < ys.length) {
     this.xs[x].store(y, value);
     this.ys[y].store(x, value); 
@@ -47,7 +69,7 @@ Matrix.prototype.setValue = function(x, y, value) {
  * @exception {Matrix.prototype.OutofBoundsException} An exception meaning the 
  * element accessed was outside of the bounds of the matrix.
  */
-Matrix.prototype.removeValue = function(x, y) {
+Staffing.Matrix.prototype.removeValue = function(x, y) {
   if(x < xs.length && y < ys.length) {
     this.xs[x].remove(y);
     this.ys[y].remove(x);
@@ -63,7 +85,7 @@ Matrix.prototype.removeValue = function(x, y) {
  * @param {Number} y The y coordinate of the parameter to check
  * @return {Boolean} True if set, false otherwise
  */
-Matrix.prototype.isSet = function(x, y) {
+Staffing.Matrix.prototype.isSet = function(x, y) {
   return this.xs[x].contains(y);
 };
 
@@ -72,7 +94,7 @@ Matrix.prototype.isSet = function(x, y) {
  * @param {Number} x The x number of the row to check
  * @return {Number} The number of set values
  */
-Matrix.prototype.countXVals = function(x) {
+Staffing.Matrix.prototype.countXVals = function(x) {
   return this.xs[x].count;
 };
 
@@ -81,11 +103,11 @@ Matrix.prototype.countXVals = function(x) {
  * @param {Number} y The y number of the column to check
  * @return {Number} The number of set values
  */
-Matrix.prototype.countYVals = function(y) {
+Staffing.Matrix.prototype.countYVals = function(y) {
   return this.ys[y].count
 }
 
-Matrix.prototype.getXVals = function(x) {
+Staffing.Matrix.prototype.getXVals = function(x) {
   var ret = [];
   UTIL.forEachIn(this.xs[x].values, function(key, value) {
     ret.push(key);
