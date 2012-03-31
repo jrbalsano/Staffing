@@ -4,8 +4,8 @@
 var UTIL = UTIL || {};
   /**
    * Runs a function f on each element of an array
-   * @param arr {Array} An array of items to cycle through
-   * @param f {Function} A function of the form function(value) which takes as
+   * @param {Array} arr An array of items to cycle through
+   * @param {Function} f A function of the form function(value) which takes as
    * parameter a value from the array.
    */
   UTIL.forEach = function forEach(arr, f) {
@@ -15,8 +15,8 @@ var UTIL = UTIL || {};
   
   /**
    * Runs a function f on each property of an object
-   * @param obj {Object} The object through which this cycles
-   * @param f {Function} A function of the form function(propery, value) that
+   * @param {Object} obj The object through which this cycles
+   * @param {Function} f A function of the form function(propery, value) that
    * defines an action to be taken for each property.
    */
   UTIL.forEachIn = function forEachIn(obj, f) {
@@ -27,11 +27,11 @@ var UTIL = UTIL || {};
   
   /**
    * Reduces an array to a single value by use of a function, combine.
-   * @param combine {Function} A function of the form function(base, element)
+   * @param {Function} combine A function of the form function(base, element)
    * which uses the previous value of combine (base) and a new value from the
    * array to return a new value of combine.
-   * @param base {Object} The initial value from which combine should work
-   * @param array {Array} The array which should be combined
+   * @param {Object} base The initial value from which combine should work
+   * @param {Array}  array The array which should be combined
    * @return {Object} the value of base after combine has been run on each
    * element in the array.
    */
