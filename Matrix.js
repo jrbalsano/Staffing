@@ -12,7 +12,7 @@ var Staffing = Staffing || {};
  * comparison returns true, this value will not be stored in the matrix.
  * @classDescription The Matrix class represents a zero-indexed 2d matrix.
  */
-Staffing.Matrix = function Matrix(xcount, ycount, initialValues, emptyVal) {
+function Matrix(xcount, ycount, initialValues, emptyVal) {
   var args = arguments;
   this.xs = UTIL.fillArray(null, xcount, function(index) {
     var ret = new UTIL.Dictionary();
