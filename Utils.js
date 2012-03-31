@@ -45,10 +45,10 @@ var UTIL = UTIL || {};
   /**
    * Counts the number of elements for which a certain condition is true in an
    * array.
-   * @param test {Function} a function  of the form function(element) which
+   * @param {Function} test a function  of the form function(element) which
    * returns true if the element meets the desired condition and false
    * otherwise
-   * @param array {Array} The array in which to count elements that meet the
+   * @param {Array} array The array in which to count elements that meet the
    * condition
    */
   UTIL.count = function count(test, array) {
@@ -61,10 +61,10 @@ var UTIL = UTIL || {};
    * Fills an array to new values defined by a function. Can accept either an
    * existing array, in which case it is both modified and returned, or else a
    * new array which is only returned. 
-   * @param arr {Array} the array in which to define values, if null, a new
+   * @param {Array} arr the array in which to define values, if null, a new
    * array will be created.
-   * @param length {Number} The number of items to fill in the array
-   * @param f {Function} A function of the form function(index) which returns
+   * @param {Number} length The number of items to fill in the array
+   * @param {Function} f A function of the form function(index) which returns
    * the desired value for each index of an array.
    */
   UTIL.fillArray = function fillArray(arr, length, f) {
@@ -73,4 +73,40 @@ var UTIL = UTIL || {};
       arr[i] = f(i);
     }
     return arr;
+  }
+  
+  UTIL.leastIndex = function leastIndex(arr, used) {
+    var least = arr[0] + 1;
+    var index = -1;
+    var args = arguments;
+    UTIL.forEach(arr, function(i) {
+      if(args.length > 1) {
+        if(least > arr[i] && !used[i]) {        
+          least = arr[i];
+          index = i;
+        }
+      }
+      else if(least > arr[i])
+        least = arr[i];
+        index = i;
+    });
+    return index; 
+  }
+
+  UTIL.greatestIndex = function greatestIndex(arr, used) {
+    var greatest = arr[0] - 1;
+    var index = -1;
+    var args = arguments;
+    UTIL.forEach(arr, function(i) {
+      if(args.length > 1) {
+        if(greatest < arr[i] && !used[i]) {        
+          least = arr[i];
+          index = i;
+        }
+      }
+      else if(greatest < arr[i])
+        least = arr[i];
+        index = i;
+    });
+    return index; 
   }

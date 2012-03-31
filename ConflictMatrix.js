@@ -3,6 +3,7 @@ function ConflictMatrix(timeslots) {
     return new UTIL.Dictionary();
   });
 }
+
 ConflictMatrix.prototype.setConflict = function(time1, time2) {
   this.conflictLists[time1].store(time2, true);
   this.conflictLists[time2].store(time1, true);

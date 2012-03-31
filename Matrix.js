@@ -12,7 +12,7 @@ var Staffing = Staffing || {};
  * comparison returns true, this value will not be stored in the matrix.
  * @classDescription The Matrix class represents a zero-indexed 2d matrix.
  */
-function Matrix(xcount, ycount, initialValues, emptyVal) {
+Staffing.Matrix = function Matrix(xcount, ycount, initialValues, emptyVal) {
   var args = arguments;
   this.xs = UTIL.fillArray(null, xcount, function(index) {
     var ret = new UTIL.Dictionary();
@@ -110,6 +110,14 @@ Staffing.Matrix.prototype.countYVals = function(y) {
 Staffing.Matrix.prototype.getXVals = function(x) {
   var ret = [];
   UTIL.forEachIn(this.xs[x].values, function(key, value) {
+    ret.push(key);
+  });
+  return ret;
+}
+
+Staffing.Matrix.prototype.getYVals = function(y) {
+  var ret = [];
+  UTIL.forEachIn(this.ys[y].values, function(key, value) {
     ret.push(key);
   });
   return ret;

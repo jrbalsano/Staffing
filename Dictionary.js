@@ -14,7 +14,7 @@ UTIL.Dictionary = function Dictionary(startValues) {
 
 UTIL.Dictionary.prototype.store = function(name, value) {
   this.values[name] = value;
-  count++;
+  this.count++;
 };
 
 UTIL.Dictionary.prototype.contains = function(name) {
@@ -23,9 +23,14 @@ UTIL.Dictionary.prototype.contains = function(name) {
 
 UTIL.Dictionary.prototype.remove = function(key) {
   if(this.contains(key)) delete this.values[key];
-  count--;
+  this.count--;
 };
 
 UTIL.Dictionary.prototype.lookup = function(name) {
   return this.values[name];
 };
+
+UTIL.Dictionary.prototype.clear = function() {
+  this.values = {};
+  this.count = 0;
+}
