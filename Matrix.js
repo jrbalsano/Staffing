@@ -122,3 +122,12 @@ Staffing.Matrix.prototype.getYVals = function(y) {
   });
   return ret;
 }
+
+Staffing.Matrix.prototype.get2DArray = function() {
+  var that = this;
+  var ret = UTIL.fillArray(null, this.xs.length, function(xIndex) {
+    return UTIL.fillArray(null, this.ys.length, function(yIndex) {
+      return that.xs[xIndex].lookup(yIndex);
+    });
+  });
+}
