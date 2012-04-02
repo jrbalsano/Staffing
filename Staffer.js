@@ -1,34 +1,32 @@
 function Staffer(availability, timeConflicts, needs) {
-  this.aMatrix = new Staffing.Matrix(availability.length, availability[0].length, availability, "");
-  this.cMatrix = new Staffing.Matrix(timeConflicts.length, timeConflicts.length, timeConflicts, "");
+  this.aMatrix = new Staffing.Matrix(availability.length, availability[0].length, availability, 0);
+  this.cMatrix = new Staffing.Matrix(timeConflicts.length, timeConflicts.length, timeConflicts, 0);
   this.sMatrix = new Staffing.Matrix(availability.length, availability[0].length);
   this.needs = needs;
   this.timeCount = timeConflicts.length;
   this.persCount = availability.length;
 }
 
+Staffer.prototype.staffSlot = function(it) {
+  var slot = it.nextTimeslot();
+  var pers = it.nextPerson();
+  for(var j = 0; pers != -1 && j < this.needs[slot]; j++) {
+    if(this.isStaffable(pers, slot)) {
+      this.sMatrix.setValue(pers, slot, true);
+      it.confirmUse(pers);
+    }
+    else {
+      j--;
+    }
+    pers = it.nextPerson();
+  }
+}
+
 Staffer.prototype.staff = function() {
   var it = new AvailabilityIterator(this.aMatrix);
-  var that = this;
-  
-  function staffSlot(value) { //Staffs a slot
-    with(that) { //The following uses the namespace of this Staffer object
-      var slot = it.nextTimeslot();
-      var pers = it.nextPerson();
-      for(var j = 0; pers != -1 && j < needs[slot]; j++) {
-        if(isStaffable(pers, slot)) {
-          sMatrix.setValue(pers, slot, true);
-          it.confirmUse(pers);
-        }
-        else {
-          j--;
-        }
-        pers = it.nextPerson()
-      }
-    }
+  for(var i = 0; i < this.timeCount; i++) {
+    this.staffSlot(it);
   }
-  
-  UTIL.forEach(needs, staffSlot(value));
 }
 
 Staffer.prototype.swapForMaxed = function(maxRatio, minStaffCount) {
@@ -41,7 +39,7 @@ Staffer.prototype.swapForMaxed = function(maxRatio, minStaffCount) {
   });
   var highestIndex = UTIL.greatestIndex(ratios, checked)
   
-  while(highestIndex != -1 && ratios[highestIndex] > maxFraction 
+  while(highestIndex != -1 && ratios[highestIndex] > maxRatio 
         && this.sMatrix.countXVals(highestIndex) < minStaffCount) 
   {
     var ratio = ratios[highestIndex];
@@ -73,10 +71,11 @@ Staffer.prototype.swapForMaxed = function(maxRatio, minStaffCount) {
 }
 
 Staffer.prototype.isStaffable = function(person, timeslot) {
-  var staffedTimes = sMatrix.getXVals(person);
+  var staffedTimes = this.sMatrix.getXVals(person);
   var ret = true;
-  UTIL.forEach(staffedTimes, function(value) {
-    if(cMatrix.xs[timeslot].contains(value)) 
+  var that = this;
+  UTIL.forEach(staffedTimes, function(otherTime) {
+    if(that.cMatrix.isSet(otherTime, timeslot) || that.cMatrix.isSet(timeslot, otherTime)) 
       ret = false;
   });
   return ret;

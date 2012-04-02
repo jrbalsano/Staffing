@@ -1,6 +1,6 @@
 function AvailabilityIterator(aMatrix) {
   this.aMatrix = aMatrix;
-  this.curSlot = 0;
+  this.curSlot = undefined;
   this.curPers = 0;
   this.usedSlots = UTIL.fillArray(null, aMatrix.ys.length, function(index) {
     return false;
@@ -9,37 +9,59 @@ function AvailabilityIterator(aMatrix) {
     return false;
   });
   this.pCountBySlot = UTIL.fillArray(null, aMatrix.ys.length, function(index) {
-    aMatrix.countYVals(index);
+    return aMatrix.countYVals(index);
   });
   this.sCountByPerson = UTIL.fillArray(null, aMatrix.xs.length, function(index) {
-    aMatrix.countXVals(index);
+    return aMatrix.countXVals(index);
+  });
+  this.staffedCountByPerson = UTIL.fillArray(null, aMatrix.xs.length, function(index) {
+    return 0;
   });
 }
 
 AvailabilityIterator.prototype.nextTimeslot = function() {
-  if(this.curslot != undefined) {
-    var aPeople = this.aMatrix.getYVals();
+  var that = this;
+  if(this.curSlot != undefined) {
+    var aPeople = this.aMatrix.getYVals(this.curSlot);
     UTIL.forEach(aPeople, function(value) {
-      this.sCountByPerson[value]--;
+      that.sCountByPerson[value]--;
     });
   }
   this.curSlot = UTIL.leastIndex(this.pCountBySlot, this.usedSlots);
-  usedSlots[this.curSlot] = true;
-  this.usedPeople = UTIL.fillArray(null, aMatrix.ys.length, function(index) {
-    return false;
+  this.usedSlots[this.curSlot] = true;
+  this.usedPeople = UTIL.fillArray(null, this.aMatrix.xs.length, function(index) {
+    return !that.aMatrix.isSet(index, that.curSlot) || that.sCountByPerson[index] == 0;
   });
   return this.curSlot;
 }
 
 AvailabilityIterator.prototype.nextPerson = function() {
-  do {
-    var index = UTIL.leastIndex(this.sCountByPerson, usedPeople);
-    usedPeople[index] = true;
-  } while(!this.aMatrix.isSet(index, this.curSlot));
+  var that = this;
+  
+  var leastStaffedValue = UTIL.leastValue(this.staffedCountByPerson, this.usedPeople);
+  var leastStaffedPeople = [];
+  UTIL.forEach(this.staffedCountByPerson, function(value, index) {
+    if(!that.usedPeople[index] && value === leastStaffedValue) 
+      leastStaffedPeople.push(index);
+  });
+  if(leastStaffedPeople.length == 0) { 
+    var index = -1;
+  }
+  else {
+    var least = this.sCountByPerson[leastStaffedPeople[0]] + 1;
+    var index = -1;
+    UTIL.forEach(leastStaffedPeople, function(value, i) {
+      if(least > that.sCountByPerson[value]) {
+        index = value;
+        least = that.sCountByPerson[value];
+      }
+    });
+    this.usedPeople[index] = true;
+  }
   this.curPers = index;
   return index;
 }
 
 AvailabilityIterator.prototype.confirmUse = function(person) {
-  sCountByPerson[person]--;
+  this.staffedCountByPerson[person]++;
 }

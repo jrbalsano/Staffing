@@ -53,7 +53,7 @@ Staffing.Matrix.prototype.OutOfBoundsException = new Error("Out of matrix bounds
  * element accessed was outside of the bounds of the matrix.
  */
 Staffing.Matrix.prototype.setValue = function(x, y, value) {
-  if(x < xs.length && y < ys.length) {
+  if(x < this.xs.length && y < this.ys.length) {
     this.xs[x].store(y, value);
     this.ys[y].store(x, value); 
   }
@@ -125,9 +125,10 @@ Staffing.Matrix.prototype.getYVals = function(y) {
 
 Staffing.Matrix.prototype.get2DArray = function() {
   var that = this;
-  var ret = UTIL.fillArray(null, this.xs.length, function(xIndex) {
-    return UTIL.fillArray(null, this.ys.length, function(yIndex) {
+  var ret = UTIL.fillArray(null, that.xs.length, function(xIndex) {
+    return UTIL.fillArray(null, that.ys.length, function(yIndex) {
       return that.xs[xIndex].lookup(yIndex);
     });
   });
+  return ret;
 }

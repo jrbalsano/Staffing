@@ -18,7 +18,7 @@ UTIL.Dictionary.prototype.store = function(name, value) {
 };
 
 UTIL.Dictionary.prototype.contains = function(name) {
-  return Object.prototype.hasOwnProperty.call(this, name);
+  return Object.prototype.hasOwnProperty.call(this.values, name);
 };
 
 UTIL.Dictionary.prototype.remove = function(key) {

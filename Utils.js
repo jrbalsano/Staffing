@@ -10,7 +10,7 @@ var UTIL = UTIL || {};
    */
   UTIL.forEach = function forEach(arr, f) {
     for(var i = 0; i < arr.length; i++)
-      f(arr[i]);
+      f(arr[i], i);
   }
   
   /**
@@ -76,36 +76,72 @@ var UTIL = UTIL || {};
   }
   
   UTIL.leastIndex = function leastIndex(arr, used) {
-    var least = arr[0] + 1;
-    var index = -1;
-    var args = arguments;
-    UTIL.forEach(arr, function(i) {
-      if(args.length > 1) {
-        if(least > arr[i] && !used[i]) {        
-          least = arr[i];
-          index = i;
-        }
+    var least;
+    if(arguments.length > 1) {
+      for(var i = 0; i < arr.length && least == undefined; i++) {
+        if(!used[i]) least = arr[i];
       }
-      else if(least > arr[i])
-        least = arr[i];
+    }
+    else 
+      least = arr[0] + 1;
+    var index = -1;
+    var usedFunction = function(val, i) {
+      if(least >= val && !used[i]) {        
+        least = val;
         index = i;
-    });
+      }
+    }
+    var otherFunction = function(val, i) {
+      if(least > val) {
+        least = val;
+        index = i;
+      }
+    }
+    
+    UTIL.forEach(arr, arguments.length > 1 ? usedFunction : otherFunction);
     return index; 
   }
-
+  
+  UTIL.leastValue = function leastValue(arr, used) {
+    var least;
+    if(arguments.length > 1) {
+      for(var i = 0; i < arr.length && least == undefined; i++) {
+        if(!used[i]) least = arr[i];
+      }
+    }
+    else 
+      least = arr[0] + 1;
+    var index = -1;
+    var usedFunction = function(val, i) {
+      if(least >= val && !used[i]) {        
+        least = val;
+        index = i;
+      }
+    }
+    var otherFunction = function(val, i) {
+      if(least > val) {
+        least = val;
+        index = i;
+      }
+    }
+    
+    UTIL.forEach(arr, arguments.length > 1 ? usedFunction : otherFunction);
+    return index == -1 ? null : least; 
+  }
+  
   UTIL.greatestIndex = function greatestIndex(arr, used) {
     var greatest = arr[0] - 1;
     var index = -1;
     var args = arguments;
-    UTIL.forEach(arr, function(i) {
+    UTIL.forEach(arr, function(val, i) {
       if(args.length > 1) {
-        if(greatest < arr[i] && !used[i]) {        
-          least = arr[i];
+        if(greatest < val && !used[i]) {        
+          least = val;
           index = i;
         }
       }
-      else if(greatest < arr[i])
-        least = arr[i];
+      else if(greatest < val)
+        least = val;
         index = i;
     });
     return index; 
