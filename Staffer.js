@@ -39,30 +39,30 @@ Staffer.prototype.swapForMaxed = function(maxRatio, minStaffCount) {
   });
   var highestIndex = UTIL.greatestIndex(ratios, checked)
   
-  while(highestIndex != -1 && ratios[highestIndex] > maxRatio 
-        && this.sMatrix.countXVals(highestIndex) < minStaffCount) 
+  while(highestIndex != -1 && ratios[highestIndex] > maxRatio) 
   {
     var ratio = ratios[highestIndex];
     checked[highestIndex] = true;
-    var slots = sMatrix.getXVals(highestIndex);
+    var slots = this.sMatrix.getXVals(highestIndex);
+    var numStaffed = slots.length;
     
-    for(var i = 0; i < slots.length && ratio > maxRatio; i++) {
-      var others = this.aMatrix.getYVals(slots[i]);
+    for(var i = 0; i < slots.length && ratio > maxRatio && numStaffed > minStaffCount; i++) {
       var slot = slots[i];
-      var found = false
+      var others = this.aMatrix.getYVals(slot);
       for(var j = 0; j < others.length; j++) {
         var other = others[j];
         if(!this.sMatrix.isSet(other, slot) && 
             this.isStaffable(other, slot) && 
             (this.sMatrix.countXVals(other) + 1) / this.aMatrix.countXVals(other) < maxRatio) 
-            {
-              sMatrix.setValue(other, slot, true);
-              sMatrix.removeValue(highestIndex, slot);
-              j = others.length;
-              ratio = this.sMatrix.countXVals(other) / this.aMatrix.countXVals(other);
-              ratios[other] = this.sMatrix.countXVals(other) / this.aMatrix.countXValus(other);
-              ratios[highestIndex] = ratio;
-            }
+        {
+          this.sMatrix.setValue(other, slot, true);
+          this.sMatrix.removeValue(highestIndex, slot);
+          j = others.length;
+          ratio = this.sMatrix.countXVals(other) / this.aMatrix.countXVals(other);
+          ratios[other] = this.sMatrix.countXVals(other) / this.aMatrix.countXVals(other);
+          ratios[highestIndex] = ratio;
+          numStaffed--;
+        }
       }      
     }
     

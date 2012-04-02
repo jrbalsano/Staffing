@@ -130,19 +130,29 @@ var UTIL = UTIL || {};
   }
   
   UTIL.greatestIndex = function greatestIndex(arr, used) {
-    var greatest = arr[0] - 1;
-    var index = -1;
-    var args = arguments;
-    UTIL.forEach(arr, function(val, i) {
-      if(args.length > 1) {
-        if(greatest < val && !used[i]) {        
-          least = val;
-          index = i;
-        }
+    var greatest;
+    
+    if(arguments.length > 1) {
+      for(var i = 0; i < arr.length && greatest == undefined; i++) {
+        if(!used[i]) greatest = arr[i];
       }
-      else if(greatest < val)
-        least = val;
+    }
+    else 
+      greatest = arr[0] + 1;
+   
+    var index = -1;
+    var usedFunction = function(val, i) {
+      if(greatest <= val && !used[i]) {        
+        greatest = val;
         index = i;
-    });
+      }
+    }
+    var otherFunction = function(val, i) {
+      if(greatest <= val) {
+        greatest = val;
+        index = i;
+      }
+    }
+    UTIL.forEach(arr, arguments.length > 1 ? usedFunction : otherFunction);
     return index; 
   }

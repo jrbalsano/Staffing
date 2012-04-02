@@ -70,7 +70,7 @@ Staffing.Matrix.prototype.setValue = function(x, y, value) {
  * element accessed was outside of the bounds of the matrix.
  */
 Staffing.Matrix.prototype.removeValue = function(x, y) {
-  if(x < xs.length && y < ys.length) {
+  if(x < this.xs.length && y < this.ys.length) {
     this.xs[x].remove(y);
     this.ys[y].remove(x);
   }
